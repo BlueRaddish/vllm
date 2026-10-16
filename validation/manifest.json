@@ -1,0 +1,52 @@
+{
+  "frozen_at": "2026-10-14T04:04:58.572749+00:00",
+  "scopes": {
+    "cmux": {
+      "scope_id": "oct13_evening_cmux_deadline",
+      "repo": "manaflow-ai/cmux",
+      "base": "590b0c7b80a750c9d4eac9037ed97093a0f30043",
+      "cwd": "C:\\Users\\there\\codex\\contributions\\oct13-evening-cmux-deadline",
+      "baseline_index_is_verified_subset_not_a_fabricated_upstream_commit": true,
+      "files": [
+        {
+          "path": "scripts/ci/parallel_artifact_download.py",
+          "baseline_blob": "2f55740296b683c6b6139aec43661573c109c96e",
+          "baseline_sha256": "bfaeda6abfa40fb434875e043e706c2c5402f4207bd5064838f484f13ef153b4",
+          "patched_sha256": "1abd6bec0d8b388c53d8f050f7453221fae4f0aa9caa8e6adc0fa7fac957ad18",
+          "patched_blob": "cc07f5ad97cbffffd452f48cf50fa80a509dd3b6"
+        },
+        {
+          "path": "tests/test_ci_parallel_artifact_transport.py",
+          "baseline_blob": "c7f400234cf80b32ed437f0431cb48c2915f1165",
+          "baseline_sha256": "8fc375a52cf0c8f2702aaff9c61a1b360414a76e685131cc4524a80786dd2e45",
+          "patched_sha256": "bc1146caaf6d875278de794e22f4285754d43148dac831ec09d0f937dc68d59a",
+          "patched_blob": "7bad09f53c19031bd687cf37bf327bf3bc088703"
+        }
+      ],
+      "focused_commands": [
+        [
+          "python3",
+          "tests/test_ci_parallel_artifact_transport.py",
+          "RangeDeadlineTests"
+        ]
+      ],
+      "green_commands": [
+        [
+          "python3",
+          "tests/test_ci_parallel_artifact_transport.py"
+        ]
+      ],
+      "limitations": [
+        "No hard wall-clock guarantee for already in-flight URL resolvers, fetches or executor waits.",
+        "No macOS app, signed GitHub URL, private fleet or model runtime validation."
+      ],
+      "patch_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct13-evening-cmux-deadline-review-v2.patch",
+      "patch_sha256": "0587dc619e2559c7db48dc3810cb2c1a5bdd09a0cc1472bf0a6294c0ba959a18",
+      "diff_bytes": 9806,
+      "diff_stat": " scripts/ci/parallel_artifact_download.py     |  18 +++-\n tests/test_ci_parallel_artifact_transport.py | 148 +++++++++++++++++++++++++++\n 2 files changed, 163 insertions(+), 3 deletions(-)\n",
+      "baseline_root_tree": "1a61446161983854c8cf845a23042d2baedfa517",
+      "patch_name": "cmux.patch"
+    }
+  },
+  "post_approval": null
+}
