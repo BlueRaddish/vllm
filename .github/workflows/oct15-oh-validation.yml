@@ -1,0 +1,41 @@
+name: SDK agent-hook ambient plugin isolation (scratch)
+on:
+  push:
+    branches: [ci/oct15-oh-hook-plugins-v3]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: ${{ github.sha }}
+          path: runner-control
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: '0.12.23'
+          enable-cache: false
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: OpenHands/software-agent-sdk
+          ref: cb266703c5c797f10f17eea8fea61a25ad2eac30
+          path: source
+          persist-credentials: false
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: OpenHands/docs
+          ref: b918604b96b43485fe5db4d92df704e04fb0207c
+          path: docs
+          persist-credentials: false
+      - name: Validate regressions, owning behavior, ordinary hooks and paired guide
+        working-directory: source
+        run: python ../runner-control/validation/oct15_ao_oh_validation.py

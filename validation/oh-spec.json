@@ -1,0 +1,45 @@
+{
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-16T01:53:31Z"
+  },
+  "sdk": {
+    "repo": "OpenHands/software-agent-sdk",
+    "base": "cb266703c5c797f10f17eea8fea61a25ad2eac30",
+    "files": [
+      "openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py",
+      "openhands-sdk/openhands/sdk/hooks/executor.py",
+      "tests/sdk/hooks/test_agent_hook_plugins.py"
+    ],
+    "message": "fix(hooks): keep ambient plugins out of agent-hook evaluators\n\nPreserve ordinary ambient discovery while isolating internal hook judges\nfrom plugin hooks, skills, and MCP servers. Cover all ambient sources and\nordinary hooks with real scripted SDK conversations and subprocess markers.\n\nFixes #6013\n\nAI-assisted with OpenAI Codex.\n",
+    "patch_sha256": "73b67c01669141a3633ec5efe6cef642e09f929acd28a6b48f924503c34745aa",
+    "source_sha256": {
+      "openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py": "cc60ee37c58ec95182befcb835cede8836f395a8edcf54d84e7ca43e3b9552ff",
+      "openhands-sdk/openhands/sdk/hooks/executor.py": "c08c528416895cf16c58680584a0a807fba95fefc7cff1739bcfb993f34881c8",
+      "tests/sdk/hooks/test_agent_hook_plugins.py": "a5043ea58d77ee458e168711a9dc99b24e4b92bc8fc71c9ed7d0b51debbd0d86"
+    },
+    "configuration_sha256": {
+      "pyproject.toml": "6ca189574974a2723a4d2eb6034186d72893be5c21e662a3615f6fb30cb73c1d",
+      "uv.lock": "e723efc2657d1830edfb5b9e652b1567d229864bf10a1dcf09610b4acc19b64a",
+      ".pre-commit-config.yaml": "11f6c67a3273db7ffb5693bccf5fef03d63b428b16953aee313539bd237a195c",
+      ".python-version": "02e735b3dfe1c32833eb550b7ff8ffa17f5f2bc3fa1e7bae61a8f5a3883ce398"
+    }
+  },
+  "docs": {
+    "repo": "OpenHands/docs",
+    "base": "b918604b96b43485fe5db4d92df704e04fb0207c",
+    "files": [
+      "sdk/guides/hooks.mdx"
+    ],
+    "message": "docs(sdk): describe ambient plugin isolation for agent hooks\n\nClarify that hook evaluators do not inherit ambient plugin hooks, skills,\nor MCP servers while ordinary conversations retain discovery.\n\nAI-assisted with OpenAI Codex.\n",
+    "patch_sha256": "7a8f05e7a30cd38e7db3b453ec2ab32a5470e407f615b18447a50341c1505406",
+    "source_sha256": {
+      "sdk/guides/hooks.mdx": "00a635295effb803051c5c7099d2b9c58080a5e62357a94bee1b5b81817893dc"
+    },
+    "configuration_sha256": {
+      "docs.json": "c92343f7cf1d56b1175d85d8d0a51af01027012a79bd425b15f5af6b5cc177ee",
+      ".github/workflows/check-broken-links.yml": "b8b337d03bb5251cb168eda901f20ed89960b0f2f3f4fd18f9739557e1cafc64"
+    }
+  }
+}
