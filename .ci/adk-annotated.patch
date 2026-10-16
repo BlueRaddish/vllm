@@ -1,0 +1,105 @@
+diff --git a/src/google/adk/utils/_schema_utils.py b/src/google/adk/utils/_schema_utils.py
+index 9ef27ccdd109299da01a72a5cae14e583e596283..e4823f880c16a3b30d07b809177ad7aec542843b 100644
+--- a/src/google/adk/utils/_schema_utils.py
++++ b/src/google/adk/utils/_schema_utils.py
+@@ -262,6 +262,8 @@ def validate_schema(schema: SchemaType, json_text: str) -> Any:
+ 
+ def annotation_expects_str(annotated_type: Any) -> bool:
+   """Returns True if the annotation expects ``str`` rather than JSON data."""
++  if get_origin(annotated_type) is Annotated:
++    annotated_type = get_args(annotated_type)[0]
+   if annotated_type is str:
+     return True
+   if get_origin(annotated_type) in (Union, UnionType):
+@@ -277,6 +279,8 @@ def annotation_expects_str(annotated_type: Any) -> bool:
+ 
+ def annotation_accepts_content(annotated_type: Any) -> bool:
+   """Returns True if the annotation accepts ``types.Content`` as-is."""
++  if get_origin(annotated_type) is Annotated:
++    annotated_type = get_args(annotated_type)[0]
+   if annotated_type in (Any, object, types.Content):
+     return True
+   if isinstance(annotated_type, type) and issubclass(
+diff --git a/tests/unittests/utils/test_schema_utils.py b/tests/unittests/utils/test_schema_utils.py
+index b85b1b63c2c9a25ce9e5870b799822af594fb7af..ead85eec10b45835b9a8113619223c4915cf6540 100644
+--- a/tests/unittests/utils/test_schema_utils.py
++++ b/tests/unittests/utils/test_schema_utils.py
+@@ -352,6 +352,26 @@ class TestValidateNodeData:
+     )
+     assert result == {"role": "user", "parts": []}
+ 
++  @pytest.mark.parametrize(
++      "schema",
++      [
++          Annotated[types.Content, "content"],
++          Annotated[types.Content, "content"] | None,
++      ],
++  )
++  def test_annotated_content_schema_preserves_content(self, schema):
++    """Content annotations keep the message instead of parsing its text."""
++    data = types.Content(role="user", parts=[types.Part(text='{"value": 42}')])
++
++    assert validate_node_data(schema, data) == data.model_dump(exclude_none=True)
++
++  def test_annotated_string_schema_enforces_constraints(self):
++    """Text conversion still validates the metadata on the string schema."""
++    data = types.Content(parts=[types.Part(text="1")])
++
++    with pytest.raises(ValidationError, match="at least 2 characters"):
++      validate_node_data(Annotated[str, Field(min_length=2)], data)
++
+   def test_plain_basemodel_schema_validates_raw_dict(self):
+     """Validates raw dict data against BaseModel schema."""
+     result = validate_node_data(SampleModel, {"name": "test", "value": 42})
+diff --git a/tests/unittests/workflow/test_function_node.py b/tests/unittests/workflow/test_function_node.py
+index c462f66bff03002693ce89904b5a078b2db736e3..a8f252d2d2c16866d317e280791403fb4d701357 100644
+--- a/tests/unittests/workflow/test_function_node.py
++++ b/tests/unittests/workflow/test_function_node.py
+@@ -19,6 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
+ import copy
+ import threading
+ import time
++from typing import Annotated
+ from typing import Any
+ from typing import AsyncGenerator
+ from typing import Generator
+@@ -46,6 +47,7 @@ from google.adk.workflow.utils._workflow_hitl_utils import create_request_input_
+ from google.genai import types
+ from pydantic import BaseModel
+ from pydantic import ConfigDict
++from pydantic import Field
+ from pydantic import field_validator
+ import pytest
+ 
+@@ -673,6 +675,31 @@ async def test_function_node_yield_event_with_content(
+   assert events[0].content.parts[0].text == 'some content'
+ 
+ 
++@pytest.mark.asyncio
++@pytest.mark.parametrize('text', ['123', 'true', '"quoted"'])
++async def test_annotated_string_output_preserves_json_looking_text(text):
++  """A string output schema preserves text while enforcing its metadata."""
++  received_inputs = []
++
++  def produce_content():
++    return Event(output=types.Content(parts=[types.Part(text=text)]))
++
++  def record_input(node_input: str) -> str:
++    received_inputs.append(node_input)
++    return node_input
++
++  producer = FunctionNode(produce_content)
++  producer.output_schema = Annotated[str, Field(min_length=1)]
++  agent = Workflow(
++      name='annotated_string_output',
++      edges=[(START, producer), (producer, record_input)],
++  )
++
++  await run_workflow(agent)
++
++  assert received_inputs == [text]
++
++
+ @pytest.mark.asyncio
+ async def test_content_to_str_auto_conversion(
+     request: pytest.FixtureRequest,

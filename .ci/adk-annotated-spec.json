@@ -1,0 +1,49 @@
+{
+  "scope_id": "adk-annotated",
+  "base": "f78149a97e109e9c947ade06e3a9ab8a45385e0e",
+  "files": [
+    "src/google/adk/utils/_schema_utils.py",
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/workflow/test_function_node.py"
+  ],
+  "source_sha256": {
+    "src/google/adk/utils/_schema_utils.py": "8e4e89f331901f87acbe34efe3cd182e233ba660a6bf35d5f3ab1b6a81d9d8c5",
+    "tests/unittests/utils/test_schema_utils.py": "fde32c81aae9872b067e8ba6b8886d37f04ba48528c1facef6164ec6ee7d5f58",
+    "tests/unittests/workflow/test_function_node.py": "bfa95052bdc44a172f9cb977cfdf9de6aa71b7af5f30ceeeb6a757746281fef2"
+  },
+  "source_git_blobs": {
+    "src/google/adk/utils/_schema_utils.py": "e4823f880c16a3b30d07b809177ad7aec542843b",
+    "tests/unittests/utils/test_schema_utils.py": "ead85eec10b45835b9a8113619223c4915cf6540",
+    "tests/unittests/workflow/test_function_node.py": "a8f252d2d2c16866d317e280791403fb4d701357"
+  },
+  "configuration_sha256": {
+    "tox.ini": "7eec9b6b133fc752f30a444e42d67689a38a1df08bfb8cb9ce49f28e30b6bfbf",
+    "pyproject.toml": "3ffba06717576286f871cc7a1198a4b34d066f78fb642e4d8924e1920ca3a13f",
+    ".pre-commit-config.yaml": "c7d94b14a12db526d84110ffd762c91f0ba863bbc69413b09931857abd5ce149"
+  },
+  "patch_sha256": "4837a32cc595d33dbf212a8f49c3542546437a5631a1af273f177ff4c297808e",
+  "message_sha256": "73cf3eee75e357b42ee66fbefea8ef313c0bae83eec074d1765ecf3357681669",
+  "author": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-16T01:42:34Z"
+  },
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-16T01:42:34Z"
+  },
+  "resolution_cutoff": "2026-10-16T01:20:00Z",
+  "regression_args": [
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/workflow/test_function_node.py",
+    "-k",
+    "annotated_content_schema_preserves_content or annotated_string_output_preserves_json_looking_text"
+  ],
+  "expected_regression_failures": 5,
+  "focused_tests": [
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/workflow/test_function_node.py",
+    "tests/unittests/workflow/test_parallel_worker.py"
+  ]
+}

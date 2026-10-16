@@ -1,0 +1,65 @@
+name: ADK Annotated Content Validation (scratch)
+
+on:
+  push:
+    branches: [ci/oct15-adk-annotated-v2]
+
+permissions:
+  contents: read
+
+jobs:
+  rebase-and-test:
+    name: annotated-${{ matrix.python.lane }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        python:
+          - version: '3.11'
+            lane: py311
+          - version: '3.12'
+            lane: py312
+          - version: '3.13'
+            lane: py313
+          - version: '3.14'
+            lane: py314
+    env:
+      PYTHON_VERSION: ${{ matrix.python.version }}
+      TOX_LANE: ${{ matrix.python.lane }}
+      UV_EXCLUDE_NEWER: '2026-10-16T01:20:00Z'
+    steps:
+      - name: Check out validation control only
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.sha }}
+          path: runner-control
+          persist-credentials: false
+      - name: Install the lane interpreter
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ matrix.python.version }}
+      - name: Install standalone uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.12.23'
+          enable-cache: false
+      - name: Check out the verified upstream rebase parent
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: google/adk-python
+          ref: f78149a97e109e9c947ade06e3a9ab8a45385e0e
+          fetch-depth: 1
+          path: source
+          persist-credentials: false
+      - name: Apply reviewed patch, prove regression, run hooks and commit normally
+        working-directory: source
+        run: python ../runner-control/scripts/_adk_oct15_validation.py prepare
+      - name: Run the unchanged full supported tox lane
+        working-directory: source
+        run: python ../runner-control/scripts/_adk_oct15_validation.py tests
+      - name: Print final source, config, lock and native commit proof
+        if: always()
+        working-directory: source
+        run: python ../runner-control/scripts/_adk_oct15_validation.py after
