@@ -1,0 +1,134 @@
+{
+  "frozen_at": "2026-10-16T02:25:21.789019+00:00",
+  "scopes": {
+    "vllm": {
+      "scope_id": "oct15_vllm_bound_keywords",
+      "repo": "vllm-project/vllm",
+      "base": "fb3fec970e1efc9b0069c81279bd82c84634c2bb",
+      "cwd": "C:\\Users\\there\\codex\\contributions\\oct15-vllm-bound-keywords",
+      "files": [
+        {
+          "path": "vllm/utils/func_utils.py",
+          "baseline_blob": "69600decda491a484dcb457534b02de3fa99a4bd",
+          "baseline_sha256": "9c90c61e2ef5c5e6079be35e1583a6b6610fe42c6fdac0502712b2cf7b093c00",
+          "patched_sha256": "c13de3de827dc3b6271ecfa801276d8a1c5e8e3aea719f76e76e2be6599d60be",
+          "patched_blob": "876f61afb15da93ee487bf86da7c98d1ea92b27e"
+        },
+        {
+          "path": "tests/utils_/test_func_utils.py",
+          "baseline_blob": "17c7d50cd7f91dce09f88b67a94b8868e19194fb",
+          "baseline_sha256": "a93e3c41d65c4abf220fceb1696770ad6814d21e06961f9c9f9460df77a06f30",
+          "patched_sha256": "87300a9f7357b5f0aec999190ef8f230a98b5d4e47a886b2f50336af194b6a33",
+          "patched_blob": "046d26a7675a1f5b770140d08a3e4673c2dc07b0"
+        }
+      ],
+      "source_left_unsigned": true,
+      "project_tests_hooks_executed": [],
+      "patch_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct15-vllm-bound-keywords-v3.patch",
+      "patch_sha256": "4439585b4fc55a4f301378b23c364349ce761ae34546ea65a175c7ff0e603c94",
+      "diff_stat": " tests/utils_/test_func_utils.py | 55 ++++++++++++++++++++++++++++++++++++++++-\n vllm/utils/func_utils.py        | 13 ++++++++++\n 2 files changed, 67 insertions(+), 1 deletion(-)\n",
+      "baseline_root_tree": "57255fd0d9de8e3c2f3cf9474fb12981a52b0e34",
+      "frozen_at": "2026-10-16T01:53:13.549437+00:00",
+      "supersedes": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct15-vllm-bound-keywords-package-v2.json",
+      "project": "vllm",
+      "patch_name": "vllm.patch",
+      "focused_commands": [
+        [
+          "uv",
+          "run",
+          "--active",
+          "--no-project",
+          "--python",
+          ".venv/bin/python",
+          ".venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/utils_/test_func_utils.py",
+          "--confcutdir=tests/utils_",
+          "-q",
+          "-k",
+          "bound_receiver or bound_keyword"
+        ]
+      ],
+      "consumer_command": [
+        "uv",
+        "run",
+        "--active",
+        "--no-project",
+        "--python",
+        ".venv/bin/python",
+        ".venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/utils_/test_func_utils.py",
+        "--confcutdir=tests/utils_",
+        "-q",
+        "-k",
+        "bound_receiver"
+      ],
+      "test_commands": [
+        [
+          "uv",
+          "run",
+          "--active",
+          "--no-project",
+          "--python",
+          ".venv/bin/python",
+          ".venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/utils_/test_func_utils.py",
+          "--confcutdir=tests/utils_",
+          "-q"
+        ]
+      ],
+      "quality_repairs": "Ruff SIM102 combined condition; mypy annotation uses already-imported Mapping for immutable/mutable signature maps. No behavioral test change."
+    }
+  },
+  "post_approval": {
+    "base_sha": "fb3fec970e1efc9b0069c81279bd82c84634c2bb",
+    "patch_sha256": "4439585b4fc55a4f301378b23c364349ce761ae34546ea65a175c7ff0e603c94",
+    "body_sha256": "836e7f7cc0bbd43fb24cd8c026aec2fd6ac4fe88b711d9538eac07f91174afda",
+    "dco_authorized": true,
+    "review_and_user_tests_approved": true,
+    "receipt_sha256": "c272dcd685d0a2c49a13413ddb82bbe01d33ffe24df83ac31bbecb4dc3392ad8",
+    "precheck_evidence": {
+      "repository": "BlueRaddish/vllm",
+      "run_id": 38837534576,
+      "workflow_head_sha": "94dfcd25f706250561106427c3e1cba2727aac58",
+      "conclusion": "success",
+      "job_id": 116769891973,
+      "raw_log_sha256": "3bb761c4326aeed0fbb5d459f2114226b71f8266a9a53f9d2b619deb4b5b0a1f"
+    },
+    "personal_evidence": {
+      "repository": "BlueRaddish/vllm",
+      "run_id": 38837534576,
+      "workflow_head_sha": "94dfcd25f706250561106427c3e1cba2727aac58",
+      "conclusion": "success",
+      "job_id": 116774030134,
+      "run_attempt": 2,
+      "clicked_at": "2026-10-16T02:08:05.232435+00:00",
+      "acknowledged_at": "2026-10-16T02:08:09.994135+00:00",
+      "test_commands": [
+        [
+          "uv",
+          "run",
+          "--active",
+          "--no-project",
+          "--python",
+          ".venv/bin/python",
+          ".venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/utils_/test_func_utils.py",
+          "--confcutdir=tests/utils_",
+          "-q"
+        ]
+      ],
+      "exit_codes": [
+        0
+      ],
+      "raw_log_sha256": "38bcd83a5e71628129666cc351627184483a2a8477e8cba8b0ff3ff11d0639c5"
+    }
+  }
+}

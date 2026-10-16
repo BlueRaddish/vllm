@@ -1,0 +1,15 @@
+name: Frozen Oct15 vLLM normal source commit
+on:
+  push:
+    branches: ['codex-validation/oct15-vllm-bound-signed-*']
+permissions:
+  contents: read
+jobs:
+  vllm-native-source-commit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - run: python3 validation/producer.py vllm signed
