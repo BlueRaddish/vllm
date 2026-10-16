@@ -1,0 +1,122 @@
+diff --git a/tests/utils_/test_func_utils.py b/tests/utils_/test_func_utils.py
+index 17c7d50cd7f91dce09f88b67a94b8868e19194fb..046d26a7675a1f5b770140d08a3e4673c2dc07b0 100644
+--- a/tests/utils_/test_func_utils.py
++++ b/tests/utils_/test_func_utils.py
+@@ -2,9 +2,12 @@
+ # SPDX-FileCopyrightText: Copyright contributors to the vLLM project
+ # ruff: noqa
+ 
++import gc
++import weakref
++
+ import pytest
+ 
+-from vllm.utils.func_utils import supports_kw
++from vllm.utils.func_utils import get_allowed_kwarg_only_overrides, supports_kw
+ 
+ 
+ @pytest.mark.parametrize(
+@@ -38,3 +41,59 @@ def test_supports_kw(
+         )
+         == is_supported
+     )
++
++
++@pytest.mark.parametrize("allow_var_kwargs", [False, True])
++def test_bound_receiver_is_not_a_keyword_override(allow_var_kwargs):
++    class Processor:
++        def process(self, *, size=1, **kwargs):
++            return size, kwargs
++
++        @classmethod
++        def from_pretrained(cls, *, size=1, **kwargs):
++            return size, kwargs
++
++    processor = Processor()
++    # Bound and unbound calls must not share the same cached signature state.
++    assert supports_kw(Processor.process, "self", allow_var_kwargs=allow_var_kwargs)
++    assert not supports_kw(processor.process, "self", allow_var_kwargs=allow_var_kwargs)
++    assert supports_kw(Processor.process, "self", allow_var_kwargs=allow_var_kwargs)
++    for factory, receiver in (
++        (processor.process, "self"),
++        (Processor.from_pretrained, "cls"),
++    ):
++        overrides = get_allowed_kwarg_only_overrides(
++            factory,
++            {receiver: "invalid", "size": 2},
++            requires_kw_only=False,
++            allow_var_kwargs=allow_var_kwargs,
++        )
++        assert factory(**overrides) == (2, {})
++
++
++@pytest.mark.parametrize("allow_var_kwargs", [False, True])
++def test_positional_only_bound_receiver_name_uses_var_kwargs(allow_var_kwargs):
++    class Processor:
++        def process(self, /, **kwargs):
++            return kwargs
++
++    factory = Processor().process
++    overrides = get_allowed_kwarg_only_overrides(
++        factory,
++        {"self": "extra"},
++        allow_var_kwargs=allow_var_kwargs,
++    )
++    assert factory(**overrides) == ({"self": "extra"} if allow_var_kwargs else {})
++
++
++def test_bound_keyword_checks_do_not_retain_the_receiver():
++    class Processor:
++        def process(self, *, size=1):
++            return size
++
++    processor = Processor()
++    reference = weakref.ref(processor)
++    assert supports_kw(processor.process, "size")
++    del processor
++    gc.collect()
++    assert reference() is None
+diff --git a/vllm/utils/func_utils.py b/vllm/utils/func_utils.py
+index 69600decda491a484dcb457534b02de3fa99a4bd..876f61afb15da93ee487bf86da7c98d1ea92b27e 100644
+--- a/vllm/utils/func_utils.py
++++ b/vllm/utils/func_utils.py
+@@ -50,9 +50,22 @@ def _supports_kw(
+     *,
+     requires_kw_only: bool = False,
+     allow_var_kwargs: bool = True,
++    is_bound: bool = False,
+ ) -> bool:
+     """Internal cached implementation of supports_kw."""
+-    params = inspect.signature(callable).parameters
++    params: Mapping[str, inspect.Parameter] = inspect.signature(callable).parameters
++    if is_bound and params:
++        receiver = next(iter(params.values()))
++        if (
++            receiver.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
++            and receiver.name == kw_name
++        ):
++            return False
++        if receiver.kind in (
++            inspect.Parameter.POSITIONAL_ONLY,
++            inspect.Parameter.POSITIONAL_OR_KEYWORD,
++        ):
++            params = dict(list(params.items())[1:])
+     if not params:
+         return False
+ 
+@@ -109,6 +122,7 @@ def supports_kw(
+     # Unwrap bound methods so that the lru_cache key is the underlying
+     # function, not the instance. Caching bound methods pins the object
+     # (and all its GPU tensors) for the lifetime of the cache.
++    is_bound = inspect.ismethod(callable)
+     if hasattr(callable, "__func__"):
+         callable = callable.__func__
+     return _supports_kw(
+@@ -116,6 +130,7 @@ def supports_kw(
+         kw_name,
+         requires_kw_only=requires_kw_only,
+         allow_var_kwargs=allow_var_kwargs,
++        is_bound=is_bound,
+     )
+ 
+ 
