@@ -50,9 +50,22 @@ def _supports_kw(
     *,
     requires_kw_only: bool = False,
     allow_var_kwargs: bool = True,
+    is_bound: bool = False,
 ) -> bool:
     """Internal cached implementation of supports_kw."""
-    params = inspect.signature(callable).parameters
+    params: Mapping[str, inspect.Parameter] = inspect.signature(callable).parameters
+    if is_bound and params:
+        receiver = next(iter(params.values()))
+        if (
+            receiver.kind == inspect.Parameter.POSITIONAL_OR_KEYWORD
+            and receiver.name == kw_name
+        ):
+            return False
+        if receiver.kind in (
+            inspect.Parameter.POSITIONAL_ONLY,
+            inspect.Parameter.POSITIONAL_OR_KEYWORD,
+        ):
+            params = dict(list(params.items())[1:])
     if not params:
         return False
 
@@ -109,6 +122,7 @@ def supports_kw(
     # Unwrap bound methods so that the lru_cache key is the underlying
     # function, not the instance. Caching bound methods pins the object
     # (and all its GPU tensors) for the lifetime of the cache.
+    is_bound = inspect.ismethod(callable)
     if hasattr(callable, "__func__"):
         callable = callable.__func__
     return _supports_kw(
@@ -116,6 +130,7 @@ def supports_kw(
         kw_name,
         requires_kw_only=requires_kw_only,
         allow_var_kwargs=allow_var_kwargs,
+        is_bound=is_bound,
     )
 
 
