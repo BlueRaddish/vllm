@@ -1,0 +1,249 @@
+diff --git a/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py b/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py
+index 8019000853101a7eaf6744bad47eb7e7d6cd77a9..8cf0aececee8ad9398d4588f02d6cf69e8b708e7 100644
+--- a/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py
++++ b/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py
+@@ -203,6 +203,7 @@ class LocalConversation(BaseConversation):
+     _plugin_specs: list[PluginSource] | None
+     _resolved_plugins: list[ResolvedPluginSource] | None
+     _plugins_loaded: bool
++    _load_ambient_plugins: bool
+     _pending_hook_config: HookConfig | None  # Hook config to combine with plugin hooks
+     _mcp_tool_provider: MCPToolProvider
+     _mcp_config_from_parent: bool
+@@ -246,6 +247,7 @@ class LocalConversation(BaseConversation):
+         stream_callbacks: list[StreamProgressCallbackType] | None = None,
+         _parent_llm_call_context: LLMCallContext | None = None,
+         _mcp_config_from_parent: bool = False,
++        _load_ambient_plugins: bool = True,
+         **_: object,
+     ):
+         """Initialize the conversation.
+@@ -311,6 +313,8 @@ class LocalConversation(BaseConversation):
+             _mcp_config_from_parent: The agent's ``mcp_config`` is the resolved
+                 config of a delegating parent. It is used as-is: no plugin MCP
+                 servers are merged into it and no ``${VAR}`` is expanded again.
++            _load_ambient_plugins: Whether internal conversations discover ambient
++                plugins in addition to their explicitly attached plugins.
+             profile_store_dir: Optional directory containing saved LLM profiles.
+                 Defaults to ``~/.openhands/profiles``.
+         """
+@@ -328,6 +332,7 @@ class LocalConversation(BaseConversation):
+         self._plugin_specs = plugins
+         self._resolved_plugins = None
+         self._plugins_loaded = False
++        self._load_ambient_plugins = _load_ambient_plugins
+         self._pending_hook_config = hook_config  # Will be combined with plugin hooks
+         self._agent_ready = False  # Agent initialized lazily after plugins loaded
+         self._mcp_tool_provider = mcp_tool_provider or DefaultMCPToolProvider()
+@@ -1131,10 +1136,14 @@ class LocalConversation(BaseConversation):
+         # and home directories, so discovery naturally yields nothing there.
+         ambient_plugins_loaded = False
+         try:
+-            ambient_plugins = load_available_plugins(
+-                work_dir=self.workspace.working_dir,
+-                include_user=True,
+-                include_project=True,
++            ambient_plugins = (
++                load_available_plugins(
++                    work_dir=self.workspace.working_dir,
++                    include_user=True,
++                    include_project=True,
++                )
++                if self._load_ambient_plugins
++                else {}
+             )
+         except Exception:
+             logger.warning(
+diff --git a/openhands-sdk/openhands/sdk/hooks/executor.py b/openhands-sdk/openhands/sdk/hooks/executor.py
+index f678250f2fd2b70c77a1929245995286389a68a3..84952fb0534f6cecce06a63e2c8be69e95e161f9 100644
+--- a/openhands-sdk/openhands/sdk/hooks/executor.py
++++ b/openhands-sdk/openhands/sdk/hooks/executor.py
+@@ -266,12 +266,13 @@ class HookExecutor:
+                 include_default_tools=["FinishTool"],
+                 system_prompt=hook.system_prompt,
+             )
+-            # hook_config=None disables hooks in the sub-conversation (no recursion)
++            # Ambient plugin hooks must not run or recurse inside the evaluator.
+             conversation = LocalConversation(
+                 agent=agent,
+                 workspace=self.working_dir,
+                 plugins=None,
+                 hook_config=None,
++                _load_ambient_plugins=False,
+                 persistence_dir=self.persistence_dir,
+                 visualizer=hook_visualizer,
+                 max_iteration_per_run=hook.max_iterations,
+diff --git a/tests/sdk/hooks/test_agent_hook_plugins.py b/tests/sdk/hooks/test_agent_hook_plugins.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..0c63c1a0cbad395c06b177b6d1ec981028ba700b
+--- /dev/null
++++ b/tests/sdk/hooks/test_agent_hook_plugins.py
+@@ -0,0 +1,168 @@
++"""AGENT-hook evaluators do not inherit ambient plugin hooks."""
++
++import json
++
++import pytest
++
++from openhands.sdk import Agent
++from openhands.sdk.conversation.impl.local_conversation import LocalConversation
++from openhands.sdk.hooks.config import HookDefinition, HookType
++from openhands.sdk.hooks.executor import HookExecutor
++from openhands.sdk.hooks.types import HookDecision, HookEvent, HookEventType
++from openhands.sdk.llm import Message, TextContent
++from openhands.sdk.plugin import (
++    discovery,
++    install_plugin,
++    installed,
++    load_available_plugins,
++)
++from openhands.sdk.testing import TestLLM
++from tests.command_utils import python_command
++
++
++@pytest.fixture
++def ambient_hook_plugin(tmp_path, monkeypatch, request):
++    workspace = tmp_path / "workspace"
++    workspace.mkdir()
++    user_dirs = [tmp_path / "user-agents", tmp_path / "user-openhands"]
++    store = tmp_path / "installed"
++    monkeypatch.setattr(discovery, "USER_PLUGINS_DIRS", user_dirs)
++    monkeypatch.setattr(installed, "DEFAULT_INSTALLED_PLUGINS_DIR", store)
++    locations = {
++        "project-openhands": workspace / ".openhands" / "plugins" / "probe",
++        "project-agents": workspace / ".agents" / "plugins" / "probe",
++        "user-agents": user_dirs[0] / "probe",
++        "user-openhands": user_dirs[1] / "probe",
++        "installed": tmp_path / "source-plugin",
++    }
++    plugin = locations[request.param]
++    manifest = plugin / ".plugin" / "plugin.json"
++    manifest.parent.mkdir(parents=True)
++    manifest.write_text(
++        json.dumps({"name": "evaluator-probe", "version": "1.0.0"}), encoding="utf-8"
++    )
++    marker = tmp_path / "hooks.jsonl"
++    command = python_command(
++        "import pathlib, sys; "
++        f"pathlib.Path({str(marker)!r}).open('a', encoding='utf-8')"
++        ".write(sys.stdin.read().replace(chr(10), ' ') + chr(10))"
++    )
++    hooks = plugin / "hooks" / "hooks.json"
++    hooks.parent.mkdir()
++    hooks.write_text(
++        json.dumps(
++            {
++                event: [
++                    {"matcher": "*", "hooks": [{"type": "command", "command": command}]}
++                ]
++                for event in ("SessionStart", "SessionEnd")
++            }
++        ),
++        encoding="utf-8",
++    )
++    skills = plugin / "skills"
++    skills.mkdir()
++    (skills / "probe.md").write_text(
++        "---\nname: evaluator-probe-skill\n---\nProbe.", encoding="utf-8"
++    )
++    if request.param == "installed":
++        install_plugin(str(plugin), installed_dir=store)
++    assert "evaluator-probe" in load_available_plugins(
++        work_dir=workspace, include_user=True, include_project=True
++    )
++    return workspace, marker
++
++
++def scripted_llm(decision="allow"):
++    return TestLLM.from_messages(
++        [
++            Message(
++                role="assistant",
++                content=[
++                    TextContent(text=json.dumps({"decision": decision, "reason": "ok"}))
++                ],
++            )
++        ]
++    )
++
++
++@pytest.mark.parametrize(
++    "ambient_hook_plugin",
++    [
++        "project-openhands",
++        "project-agents",
++        "user-agents",
++        "user-openhands",
++        "installed",
++    ],
++    indirect=True,
++)
++@pytest.mark.parametrize("decision", ["allow", "deny"])
++def test_agent_evaluator_ignores_ambient_plugin_hooks(ambient_hook_plugin, decision):
++    workspace, marker = ambient_hook_plugin
++    executor = HookExecutor(working_dir=str(workspace), llm=scripted_llm(decision))
++
++    result = executor._execute_agent_hook(
++        HookDefinition(type=HookType.AGENT, system_prompt="Evaluate."),
++        HookEvent(event_type=HookEventType.STOP, session_id="parent"),
++    )
++
++    assert result.decision == HookDecision(decision)
++    assert result.error is None
++    assert not marker.exists()
++
++    conversation = LocalConversation(
++        agent=Agent(llm=scripted_llm(), tools=[]), workspace=workspace, visualizer=None
++    )
++    try:
++        conversation.send_message("Start an ordinary conversation.")
++        assert conversation.agent.agent_context is not None
++        assert "evaluator-probe-skill" in {
++            skill.name for skill in conversation.agent.agent_context.skills
++        }
++    finally:
++        conversation.close()
++
++    events = [
++        json.loads(line) for line in marker.read_text(encoding="utf-8").splitlines()
++    ]
++    assert [event["event_type"] for event in events] == ["SessionStart", "SessionEnd"]
++    assert {event["session_id"] for event in events} == {str(conversation.id)}
++
++
++@pytest.mark.parametrize("ambient_hook_plugin", ["project-openhands"], indirect=True)
++def test_ambient_agent_stop_hook_does_not_start_nested_evaluators(
++    ambient_hook_plugin, monkeypatch
++):
++    workspace, marker = ambient_hook_plugin
++    hooks_path = workspace / ".openhands/plugins/probe/hooks/hooks.json"
++    hooks = json.loads(hooks_path.read_text(encoding="utf-8"))
++    hooks["Stop"] = [
++        {
++            "hooks": [
++                {"type": "agent", "system_prompt": "Evaluate.", "max_iterations": 1}
++            ]
++        }
++    ]
++    hooks_path.write_text(json.dumps(hooks), encoding="utf-8")
++    created = []
++    initialize = LocalConversation.__init__
++
++    def record_conversation(self, *args, **kwargs):
++        created.append(self)
++        if len(created) > 1:
++            raise RuntimeError("An ambient Stop hook started a nested evaluator")
++        initialize(self, *args, **kwargs)
++
++    monkeypatch.setattr(LocalConversation, "__init__", record_conversation)
++    result = HookExecutor(
++        working_dir=str(workspace), llm=scripted_llm()
++    )._execute_agent_hook(
++        HookDefinition(type=HookType.AGENT, system_prompt="Evaluate."),
++        HookEvent(event_type=HookEventType.STOP, session_id="parent"),
++    )
++
++    assert result.decision == HookDecision.ALLOW
++    assert result.error is None
++    assert len(created) == 1
++    assert not marker.exists()
