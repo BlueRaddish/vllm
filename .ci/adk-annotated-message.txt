@@ -1,0 +1,7 @@
+fix(workflow): preserve Annotated text and content schemas
+
+Unwrap Annotated when choosing whether node content is text or a
+message. Keep JSON-looking string output intact and retain Pydantic
+metadata validation.
+
+AI-assisted with OpenAI Codex.
