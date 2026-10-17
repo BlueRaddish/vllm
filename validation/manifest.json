@@ -1,0 +1,76 @@
+{
+  "repo": "manaflow-ai/cmux",
+  "pull_number": 21130,
+  "preview": "6371881a4e30bb77c4bf8001001e23059cb8e86b",
+  "preview_base": "3cc3a7ec429c423d8efd7394f9b3110755e1756d",
+  "pr_head": "eaea2720b61c3a7d283cb2cc27e378daa1412394",
+  "preview_tree": "6b87a8d763a348b81a7c892b22c6e9610cb1e0ed",
+  "files": [
+    {
+      "path": "scripts/ci/parallel_artifact_download.py",
+      "blob": "cc07f5ad97cbffffd452f48cf50fa80a509dd3b6",
+      "sha256": "1abd6bec0d8b388c53d8f050f7453221fae4f0aa9caa8e6adc0fa7fac957ad18"
+    },
+    {
+      "path": "tests/test_ci_parallel_artifact_transport.py",
+      "blob": "7bad09f53c19031bd687cf37bf327bf3bc088703",
+      "sha256": "bc1146caaf6d875278de794e22f4285754d43148dac831ec09d0f937dc68d59a"
+    },
+    {
+      "path": "Sources/FeatureFlags.swift",
+      "blob": "ebe20e89938bb70a8ac8ab1b33ac6e617aef91e5",
+      "sha256": "b63ad68c3ec946770e5299659f67b055383d08a2c0770ccdb02ee84b94619277"
+    },
+    {
+      "path": "scripts/verify-local.py",
+      "blob": "d1975d2310d08a7dcece43039dd0f606bfcc9467",
+      "sha256": "9cf1a5e76c5eeb2e58d5d7b2ba623ef4ecc80860c4aba858339a810baa8fb819"
+    },
+    {
+      "path": "scripts/install-git-hooks.sh",
+      "blob": "c3b78e9eb210e3fd3d01c825ce9315f07a7fdf0c",
+      "sha256": "43561c00243b72ce8dce26c60ac2a61051b27ab18dd47cbfb53e9c78eb3f947f"
+    },
+    {
+      "path": "scripts/ci/app_host_layer_transport.py",
+      "blob": "cb5bd80f4c61a03a8d29d7f17d8d84c783cacc21",
+      "sha256": "9bd21d43e75af327abbcf876a7ea505b8bade12c65e5168b90427a91a9a91b86"
+    },
+    {
+      "path": "tests/test_app_host_layer_transport.py",
+      "blob": "d71bf43068f5c7f8d43f1c9301eaf0fe9ee0e519",
+      "sha256": "c9c5b090f220734004a18f8100649d60f9411f8655b86432af95f176a3013411"
+    }
+  ],
+  "patch_files": [
+    "scripts/ci/parallel_artifact_download.py",
+    "tests/test_ci_parallel_artifact_transport.py"
+  ],
+  "patch_numstat": "15\t3\tscripts/ci/parallel_artifact_download.py\n148\t0\ttests/test_ci_parallel_artifact_transport.py\n",
+  "source_patch_sha256": "0587dc619e2559c7db48dc3810cb2c1a5bdd09a0cc1472bf0a6294c0ba959a18",
+  "test_commands": [
+    [
+      "python3",
+      "tests/test_ci_parallel_artifact_transport.py",
+      "RangeDeadlineTests"
+    ],
+    [
+      "python3",
+      "tests/test_ci_parallel_artifact_transport.py"
+    ],
+    [
+      "python3",
+      "tests/test_app_host_layer_transport.py"
+    ],
+    [
+      "python3",
+      "scripts/verify-local.py",
+      "--all"
+    ]
+  ],
+  "limits": [
+    "Exact existing GitHub integration preview snapshot, not every subsequent main commit.",
+    "No new source commits, source ref changes, native app builds, macOS execution, or live signed-URL transfer.",
+    "Existing source commits retain their original normal hook proof; preview commit was created by GitHub."
+  ]
+}
