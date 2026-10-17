@@ -1,0 +1,50 @@
+{
+  "scope_id": "adk-json-output",
+  "base": "a6ed85905d4c1d1f285ba9d4f76a9d801b66d17f",
+  "files": [
+    "src/google/adk/utils/_schema_utils.py",
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/tools/test_agent_tool.py"
+  ],
+  "source_sha256": {
+    "src/google/adk/utils/_schema_utils.py": "42fb4521e45f5fe2c5fb70e104373af57381014c4bcd71eb759efe4c6fc5c0c9",
+    "tests/unittests/utils/test_schema_utils.py": "dd46af9f805c3b1e67b3971f546bf7a0354c892ad0f95a68ca99e6023b7782d5",
+    "tests/unittests/tools/test_agent_tool.py": "34d8d382802e380da9862ea65f175aff8d47fc49ef9fda06b9767e840b8a4303"
+  },
+  "source_git_blobs": {
+    "src/google/adk/utils/_schema_utils.py": "e500e90b55a3c85ec42e30b63380876da2129680",
+    "tests/unittests/utils/test_schema_utils.py": "9c77cae1c4b411c044477be4a5050c266b651f03",
+    "tests/unittests/tools/test_agent_tool.py": "102817618f78f498aafc1e323d37a4ab73954303"
+  },
+  "configuration_sha256": {
+    "tox.ini": "7eec9b6b133fc752f30a444e42d67689a38a1df08bfb8cb9ce49f28e30b6bfbf",
+    "pyproject.toml": "25eb8754e66900ccad3e8ba175e138bcbc84659181438e9692ec735884b4b93a",
+    ".pre-commit-config.yaml": "c7d94b14a12db526d84110ffd762c91f0ba863bbc69413b09931857abd5ce149"
+  },
+  "patch_sha256": "b0440438d96117c1d70628745216c6110d5aaf648cb81eb1e2bf2bbe507ff4f5",
+  "message_sha256": "47aca866ae155cdfd2fca85f077167bad696fa2298d2186409e6a50411a40a5b",
+  "author": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-17T07:37:49Z"
+  },
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-17T07:37:49Z"
+  },
+  "resolution_cutoff": "2026-10-17T08:00:00Z",
+  "regression_args": [
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/tools/test_agent_tool.py",
+    "-k",
+    "structured_output_preserves_json_date or structured_date_output_survives_anthropic_conversion"
+  ],
+  "expected_regression_failures": 3,
+  "focused_tests": [
+    "tests/unittests/utils/test_schema_utils.py",
+    "tests/unittests/tools/test_agent_tool.py",
+    "tests/unittests/workflow/test_llm_agent_as_node.py",
+    "tests/unittests/models/test_anthropic_llm.py"
+  ]
+}

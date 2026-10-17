@@ -1,0 +1,9 @@
+fix(schema): keep structured output JSON serializable
+
+Serialize validated model output in JSON mode so date-valued AgentTool
+results survive the real Runner and tool-result serialization. Keep the
+existing exclusion of None fields for model and list output schemas.
+
+Related to #7480.
+
+AI-assisted with OpenAI Codex.

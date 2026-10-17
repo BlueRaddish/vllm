@@ -1,0 +1,107 @@
+diff --git a/src/google/adk/utils/_schema_utils.py b/src/google/adk/utils/_schema_utils.py
+index 9ef27ccdd109299da01a72a5cae14e583e596283..e500e90b55a3c85ec42e30b63380876da2129680 100644
+--- a/src/google/adk/utils/_schema_utils.py
++++ b/src/google/adk/utils/_schema_utils.py
+@@ -249,12 +249,16 @@ def validate_schema(schema: SchemaType, json_text: str) -> Any:
+ 
+   if is_basemodel_schema(schema):
+     # For regular BaseModel, use model_validate_json
+-    return schema.model_validate_json(json_text).model_dump(exclude_none=True)
++    return schema.model_validate_json(json_text).model_dump(
++        mode="json", exclude_none=True
++    )
+   elif is_list_of_basemodel(schema):
+     # For list[BaseModel], use TypeAdapter to validate
+     type_adapter = TypeAdapter(schema)
+     validated: list[Any] = type_adapter.validate_json(json_text)
+-    return [item.model_dump(exclude_none=True) for item in validated]
++    return [
++        item.model_dump(mode="json", exclude_none=True) for item in validated
++    ]
+   else:
+     # For other schema types (list[str], dict, Schema, etc.),
+     return _json_utils.safe_json_loads(json_text, context="schema value")
+diff --git a/tests/unittests/tools/test_agent_tool.py b/tests/unittests/tools/test_agent_tool.py
+index d4973c1dfab7e401d5aeae8f84fe11d806d5ed8e..102817618f78f498aafc1e323d37a4ab73954303 100644
+--- a/tests/unittests/tools/test_agent_tool.py
++++ b/tests/unittests/tools/test_agent_tool.py
+@@ -14,6 +14,7 @@
+ 
+ import asyncio
+ import contextlib
++from datetime import date
+ import json
+ from typing import Any
+ from typing import Optional
+@@ -33,6 +34,7 @@ from google.adk.features import FeatureName
+ from google.adk.features._feature_registry import temporary_feature_override
+ from google.adk.flows.llm_flows.tools._thread_pool import _call_tool_in_thread_pool
+ from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
++from google.adk.models.anthropic_llm import part_to_message_block
+ from google.adk.models.llm_request import LlmRequest
+ from google.adk.models.llm_response import LlmResponse
+ from google.adk.plugins.base_plugin import BasePlugin
+@@ -2205,6 +2207,32 @@ def test_agent_tool_skip_summarization_handles_non_string_result(
+   assert text_parts == ['{"value": 123}']
+ 
+ 
++def test_agent_tool_structured_date_output_survives_anthropic_conversion(
++    setup_skip_summarization_runner,
++):
++  """The Runner's typed tool result must serialize for the parent provider."""
++
++  class DatedOutput(BaseModel):
++    day: date
++
++  runner = setup_skip_summarization_runner(
++      tool_agent_model_responses=['{"day": "2026-10-17"}'],
++      tool_agent_output_schema=DatedOutput,
++  )
++  events = runner.run('start')
++
++  final_event = [event for event in events if event.is_final_response()][-1]
++  assert [part.text for part in final_event.content.parts if part.text] == [
++      '{"day": "2026-10-17"}'
++  ]
++  response_part = next(
++      part for part in final_event.content.parts if part.function_response
++  )
++  block = part_to_message_block(response_part)
++  assert block['type'] == 'tool_result'
++  assert json.loads(block['content']) == {'day': '2026-10-17'}
++
++
+ # ---------------------------------------------------------------------------
+ # Tests for input_schema message wrapping
+ # ---------------------------------------------------------------------------
+diff --git a/tests/unittests/utils/test_schema_utils.py b/tests/unittests/utils/test_schema_utils.py
+index b85b1b63c2c9a25ce9e5870b799822af594fb7af..9c77cae1c4b411c044477be4a5050c266b651f03 100644
+--- a/tests/unittests/utils/test_schema_utils.py
++++ b/tests/unittests/utils/test_schema_utils.py
+@@ -14,6 +14,7 @@
+ 
+ """Tests for _schema_utils module."""
+ 
++from datetime import date
+ import functools
+ import inspect
+ import signal
+@@ -178,6 +179,18 @@ class TestValidateSchema:
+     result = validate_schema(ModelWithOptional, json_text)
+     assert result == {"name": "test"}
+ 
++  @pytest.mark.parametrize("as_list", [False, True])
++  def test_structured_output_preserves_json_date(self, as_list):
++    class DatedOutput(BaseModel):
++      day: date
++      note: str | None = None
++
++    schema = list[DatedOutput] if as_list else DatedOutput
++    payload = '[{"day": "2026-10-17"}]' if as_list else '{"day": "2026-10-17"}'
++    expected = [{"day": "2026-10-17"}] if as_list else {"day": "2026-10-17"}
++
++    assert validate_schema(schema, payload) == expected
++
+   def test_list_of_basemodel_schema(self):
+     """Test validation with a list[BaseModel] schema."""
+     json_text = '[{"name": "item1", "value": 1}, {"name": "item2", "value": 2}]'
