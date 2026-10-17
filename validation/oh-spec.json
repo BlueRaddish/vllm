@@ -1,0 +1,30 @@
+{
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-17T07:45:58Z"
+  },
+  "sdk": {
+    "base": "1fbfd37f6fb21491ed733fc92d409aff1517ff4a",
+    "files": [
+      "clients/typescript/src/client/http-client.ts",
+      "clients/typescript/src/__tests__/http-client-response.test.ts"
+    ],
+    "repo": "OpenHands/software-agent-sdk",
+    "patch_sha256": "23b4860274f921397da2f65fe17652dd61e0bd5d10d65d40247c76df329041e2",
+    "source_sha256": {
+      "clients/typescript/src/client/http-client.ts": "c63a0650dfe9061698f88a9128f6509f62a1c9d6456b56b815140aa548306648",
+      "clients/typescript/src/__tests__/http-client-response.test.ts": "a0bd7466a96c3917e79ff52c516e7a8c3b548e68c1a0f8542b7a182d3d8ac6bf"
+    },
+    "configuration_sha256": {
+      "pyproject.toml": "6ca189574974a2723a4d2eb6034186d72893be5c21e662a3615f6fb30cb73c1d",
+      "uv.lock": "64f012d63f2feeb570102be251d2474def6501b0cf90de085302ed635f41bc7f",
+      ".pre-commit-config.yaml": "11f6c67a3273db7ffb5693bccf5fef03d63b428b16953aee313539bd237a195c",
+      "clients/typescript/package-lock.json": "5ac48400de51b66ab9ecc3adc04f9ef7497de2d7f0b9dc2bb5f9bcb37ee9e858",
+      "clients/typescript/package.json": "a66b9379ddbfef70fb4bf6be6f23a827e61609baef45ac45057a4d6fa3569561"
+    },
+    "message": "fix(ts-client): reject truncated GET response streams\n\nHandle IncomingMessage errors so a prematurely closed GET-with-body\nresponse rejects instead of remaining pending after its socket closes.\nKeep the existing request-error cause and message convention.\n\nFixes #6059\n\nAI-assisted with OpenAI Codex.\n\nCo-authored-by: openhands <openhands@all-hands.dev>\n"
+  },
+  "issue": 6059,
+  "source_branch": "fix/oct17-ao-oh-response-errors"
+}
