@@ -1,0 +1,46 @@
+{
+  "scope_id": "adk7045-cleanup-review",
+  "base": "93b70886c373f4a6f4718596b4a7f38aacd464bd",
+  "baseline_base": "b0180620f4c2f4f4467a89c37a30f75bf849700b",
+  "files": [
+    "src/google/adk/runners.py",
+    "src/google/adk/tools/agent_tool.py",
+    "tests/unittests/tools/test_agent_tool.py"
+  ],
+  "source_sha256": {
+    "src/google/adk/runners.py": "64913aa15d96a43dff720137a2be74d965b5a4bc41dafbd5c80fddac54a7318d",
+    "src/google/adk/tools/agent_tool.py": "37a95dc40515e5772ded5b59ed9237f0ab1c897f04041a50eb094436583985ff",
+    "tests/unittests/tools/test_agent_tool.py": "f8a260472b69c03d3fdc087d0919b8e79a6dbe6ef380a2e605157c7d4b67440e"
+  },
+  "source_git_blobs": {
+    "src/google/adk/runners.py": "52f908a02701b2edfc765515f07951b3f7ccbcbc",
+    "src/google/adk/tools/agent_tool.py": "08d5ed4ed48856b9e3a37d4029b070a830bfd783",
+    "tests/unittests/tools/test_agent_tool.py": "83cb93abca7f49b8ebda6b152ccc2403e397a97e"
+  },
+  "configuration_sha256": {
+    "tox.ini": "4ad8b5205e760ba61738554041e8fbdfacdcd38187a5b167006dd6b4bdac0801",
+    "pyproject.toml": "9f6102beddeb2266ff49f7dbad782ec89fde20b11d45c1fcf14f3d8b9ba71d1b",
+    ".pre-commit-config.yaml": "0942b11875f9c3fbef185490a87262e70139c7c6e85e6abdd28799c3ae321194"
+  },
+  "patch_sha256": "f30076d2a974105440292dbaff47291cdc150fa3bd6cc3b8926daaad77dd5a8c",
+  "author": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-18T02:13:52Z"
+  },
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-18T02:13:52Z"
+  },
+  "resolution_cutoff": "2026-10-18T02:13:52Z",
+  "regression_args": [
+    "tests/unittests/tools/test_agent_tool.py",
+    "-k",
+    "closes_toolset_on_all_run_exits"
+  ],
+  "expected_regression_failures": 2,
+  "focused_tests": [
+    "tests/unittests/tools/test_agent_tool.py"
+  ]
+}
