@@ -1,0 +1,25 @@
+name: Oct17e independent cmux Python SDK validation
+on:
+  push:
+    branches: [codex-validation/oct17e-cmux21351-20261018]
+permissions:
+  contents: read
+jobs:
+  sdk-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate exact contributor PR red and green commits
+        run: python3 validation/producer.py
+      - name: Keep actual proof on failure or success
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/oct17e-vc-cmux21351-proofs/receipt.json')
+          if p.exists():
+              print('OCT17E_VC_FINAL_RECEIPT='+p.read_text().replace('\n',''))
+          PY

@@ -1,0 +1,115 @@
+{
+  "repo": "manaflow-ai/cmux",
+  "pull_number": 21351,
+  "pr_head": "f6f3fb84807097519d105f73771e2325ea490890",
+  "red": "92befa79520a732739c425772940adc3c1e3f013",
+  "base": "3e7ed5a562ae01cb1cd6ff1faa1a41bbf9f6251b",
+  "head_tree": "64124dccbeea00d6275dfab674a984311757b6bf",
+  "files": [
+    {
+      "path": "cmux-tui/bindings/python/cmux/aio.py",
+      "git_path": "cmux-tui/bindings/python/cmux/aio.py",
+      "blob": "5ec8a798bbbcc523bae0b5144b542ed4b726ee74",
+      "sha256": "75d42690747b2e9937a0e0ef6a5bd74a9055cef855dc62683cbdb47e6f7dbf61",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-cmux-tui--bindings--python--cmux--aio.py"
+    },
+    {
+      "path": "cmux-tui/bindings/python/tests/test_aio_cleanup.py",
+      "git_path": "cmux-tui/bindings/python/tests/test_aio_cleanup.py",
+      "blob": "947c3f2690dacd684e4ce64b413c63e52ebdbde3",
+      "sha256": "533c671159c0b33a1e696125bee59a2034d932f272a53ac981069bf2f1db74f2",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-cmux-tui--bindings--python--tests--test_aio_cleanup.py"
+    },
+    {
+      "path": "cmux-tui/bindings/python/cmux/_protocol.py",
+      "git_path": "cmux-tui/bindings/python/cmux/_protocol.py",
+      "blob": "d2fed5cbe4b3d326544bf21f3cecf2abb65b15d8",
+      "sha256": "b1e3cbf2529771a97f33c8ba7da7e874c06f11f033387b5a2c9531b04ce3d036",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-cmux-tui--bindings--python--cmux--_protocol.py"
+    },
+    {
+      "path": "AGENTS.md",
+      "git_path": "CLAUDE.md",
+      "blob": "f1b061369059e3c39ba7b46f47edfc8c92e60205",
+      "sha256": "44f5c35a42cd41f58f03b7f4eb5972ac7ec009de67005658e3ef933da45dfaa6",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-AGENTS.md"
+    },
+    {
+      "path": "cmux-tui/AGENTS.md",
+      "git_path": "cmux-tui/AGENTS.md",
+      "blob": "30e7349932e0d946360aa1296cf94291a80f3dc9",
+      "sha256": "96cc760d2c51beebccb5b09bd271350756a75b5301eb55ed72b8e8037582a182",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-cmux-tui--AGENTS.md"
+    },
+    {
+      "path": "scripts/install-git-hooks.sh",
+      "git_path": "scripts/install-git-hooks.sh",
+      "blob": "c3b78e9eb210e3fd3d01c825ce9315f07a7fdf0c",
+      "sha256": "43561c00243b72ce8dce26c60ac2a61051b27ab18dd47cbfb53e9c78eb3f947f",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-scripts--install-git-hooks.sh"
+    },
+    {
+      "path": "scripts/git-hooks/pre-commit",
+      "git_path": "scripts/git-hooks/pre-commit",
+      "blob": "44d6e0296d3b636eb40a86ccc1a386bd3ed62b9d",
+      "sha256": "9128585835a670f496b9ce70ca024240a015112837358946d1c244ca15b7c987",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-scripts--git-hooks--pre-commit"
+    },
+    {
+      "path": "scripts/verify-local.py",
+      "git_path": "scripts/verify-local.py",
+      "blob": "d1975d2310d08a7dcece43039dd0f606bfcc9467",
+      "sha256": "9cf1a5e76c5eeb2e58d5d7b2ba623ef4ecc80860c4aba858339a810baa8fb819",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-scripts--verify-local.py"
+    },
+    {
+      "path": "Sources/FeatureFlags.swift",
+      "git_path": "Sources/FeatureFlags.swift",
+      "blob": "ebe20e89938bb70a8ac8ab1b33ac6e617aef91e5",
+      "sha256": "b63ad68c3ec946770e5299659f67b055383d08a2c0770ccdb02ee84b94619277",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-Sources--FeatureFlags.swift"
+    },
+    {
+      "path": "cmux-tui/bindings/python/pyproject.toml",
+      "git_path": "cmux-tui/bindings/python/pyproject.toml",
+      "blob": "bfabc0e0d64b4198bddb6165338c844dec1d8500",
+      "sha256": "842bcf27dc462529efa276d63c75e584c72a504d05dc9ddba2de8cd3b900a2f5",
+      "local_path": "C:\\Users\\there\\codex\\open-source-contributions\\evidence\\oct17e-vc-cmux21351-control\\source-cmux-tui--bindings--python--pyproject.toml"
+    }
+  ],
+  "patch_files": [
+    "cmux-tui/bindings/python/cmux/aio.py",
+    "cmux-tui/bindings/python/tests/test_aio_cleanup.py"
+  ],
+  "focused_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "cmux-tui/bindings/python/tests",
+    "-p",
+    "test_aio_cleanup.py",
+    "-v"
+  ],
+  "full_command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "cmux-tui/bindings/python/tests",
+    "-v"
+  ],
+  "build_tools": [
+    "PyYAML",
+    "pip",
+    "setuptools>=77",
+    "wheel"
+  ],
+  "limits": [
+    "Independent validation of an existing contributor PR, with no new source commits or source ref writes.",
+    "Linux Python SDK and repository static checks only; no daemon, native macOS app, Rust build, model call, or UI verification.",
+    "The first expected baseline command must demonstrate exactly three behavioral failures and two passing cleanup controls before broader verification."
+  ]
+}
