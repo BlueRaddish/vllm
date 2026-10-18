@@ -1,0 +1,46 @@
+{
+  "scope_id": "adk7591-tool-json-followup",
+  "base": "a01591c78332256ca14579184f4e9091779d3851",
+  "files": [
+    "src/google/adk/tools/set_model_response_tool.py",
+    "tests/unittests/tools/test_set_model_response_tool.py"
+  ],
+  "source_sha256": {
+    "src/google/adk/tools/set_model_response_tool.py": "2ee2256c1ed5bafa8539d881a5d6cf7cb5ad8f44c100a5e7894b220d71e4964b",
+    "tests/unittests/tools/test_set_model_response_tool.py": "262c8307b2682eb8341c48e304c6432c386bc3f0f0ddb2b6430727b2f76b0505"
+  },
+  "source_git_blobs": {
+    "src/google/adk/tools/set_model_response_tool.py": "d30a6dc0ee8b357c5314a2318c4cf14c8793d73f",
+    "tests/unittests/tools/test_set_model_response_tool.py": "68404010a3e94e377ef80ec4860292c6ec1f64b9"
+  },
+  "configuration_sha256": {
+    "tox.ini": "7eec9b6b133fc752f30a444e42d67689a38a1df08bfb8cb9ce49f28e30b6bfbf",
+    "pyproject.toml": "25eb8754e66900ccad3e8ba175e138bcbc84659181438e9692ec735884b4b93a",
+    ".pre-commit-config.yaml": "c7d94b14a12db526d84110ffd762c91f0ba863bbc69413b09931857abd5ce149"
+  },
+  "patch_sha256": "04e0b04eb4e9256c1d31b7a1fcef1e348c5781069a959658fdb4cbecb9066f5c",
+  "message_sha256": "a0389a53b5b6cd01832ea4498a1e3b2611e489bc6e0cfb5c067e9f1844bdd4c3",
+  "author": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-18T11:44:47Z"
+  },
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-18T11:44:47Z"
+  },
+  "resolution_cutoff": "2026-10-17T08:00:00Z",
+  "regression_args": [
+    "tests/unittests/tools/test_set_model_response_tool.py",
+    "-k",
+    "test_runner_output_schema_with_tools_preserves_json_date"
+  ],
+  "expected_regression_failures": 2,
+  "focused_tests": [
+    "tests/unittests/tools/test_set_model_response_tool.py",
+    "tests/unittests/utils",
+    "tests/unittests/tools/test_agent_tool.py",
+    "tests/unittests/flows"
+  ]
+}
