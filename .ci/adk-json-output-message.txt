@@ -1,0 +1,9 @@
+fix(schema): keep fallback structured tool output JSON serializable
+
+Serialize validated BaseModel output and list items in JSON mode before
+set_model_response enters event and final-response JSON serialization.
+Preserve validation feedback and omission of None fields.
+
+Refs #7480
+
+AI-assisted with OpenAI Codex.
