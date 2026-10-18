@@ -1,0 +1,30 @@
+{
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-18T02:14:40Z"
+  },
+  "sdk": {
+    "base": "3f26a0570e96e92c6af0b75388e31c9bf4f23efc",
+    "files": [
+      "clients/typescript/src/client/http-client.ts",
+      "clients/typescript/src/__tests__/http-client-content-type.test.ts"
+    ],
+    "repo": "OpenHands/software-agent-sdk",
+    "patch_sha256": "6821c0a96b0f00586d4f483b51ec973ad6c27738ce0b53916507fbcc1ce8f844",
+    "source_sha256": {
+      "clients/typescript/src/client/http-client.ts": "5a9647846a11d54ce7f4dd0a2071e40926abedfd847535ab0e23da2e45af653e",
+      "clients/typescript/src/__tests__/http-client-content-type.test.ts": "86c5bb13aa71ac9d0094a23401a2e03aa82d7c3f83302cdb8b1b2a7d4ebf227e"
+    },
+    "configuration_sha256": {
+      "pyproject.toml": "6ca189574974a2723a4d2eb6034186d72893be5c21e662a3615f6fb30cb73c1d",
+      "uv.lock": "64f012d63f2feeb570102be251d2474def6501b0cf90de085302ed635f41bc7f",
+      ".pre-commit-config.yaml": "11f6c67a3273db7ffb5693bccf5fef03d63b428b16953aee313539bd237a195c",
+      "clients/typescript/package-lock.json": "5ac48400de51b66ab9ecc3adc04f9ef7497de2d7f0b9dc2bb5f9bcb37ee9e858",
+      "clients/typescript/package.json": "a66b9379ddbfef70fb4bf6be6f23a827e61609baef45ac45057a4d6fa3569561"
+    },
+    "message": "fix(ts-client): recognize JSON response media types regardless of case\n\nCompare JSON media type tokens without case sensitivity in both success\nand error paths for fetch and GET-with-body transports. Preserve payload\ncase, explicit response types and non-JSON responses.\n\nAI-assisted with OpenAI Codex.\n\nCo-authored-by: openhands <openhands@all-hands.dev>\n"
+  },
+  "issue": null,
+  "source_branch": "fix/oct17e-ao-oh-json-casing"
+}

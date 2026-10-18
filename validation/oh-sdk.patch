@@ -1,0 +1,100 @@
+diff --git a/clients/typescript/src/__tests__/http-client-content-type.test.ts b/clients/typescript/src/__tests__/http-client-content-type.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..e1dfb944f4267e5359f3e10baa42e638107ceff3
+--- /dev/null
++++ b/clients/typescript/src/__tests__/http-client-content-type.test.ts
+@@ -0,0 +1,52 @@
++import { createServer } from 'node:http';
++import { describe, expect, it } from 'vitest';
++import { HttpClient, HttpError } from '../client/http-client';
++
++describe('HTTP JSON media type casing', () => {
++  for (const transport of ['fetch', 'get-body'] as const) {
++    for (const contentType of [
++      'Application/JSON; charset=utf-8',
++      'application/json',
++      'text/plain',
++    ]) {
++      for (const status of [200, 400]) {
++        it(`${transport} reads ${contentType} at status ${status}`, async () => {
++          const body = { detail: 'Keep My Case' };
++          const server = createServer((request, response) => {
++            request.resume();
++            request.on('end', () => {
++              response.writeHead(status, { 'Content-Type': contentType });
++              response.end(JSON.stringify(body));
++            });
++          });
++          await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
++          const address = server.address();
++          if (!address || typeof address === 'string') throw new Error('Missing loopback port');
++          const client = new HttpClient({ baseUrl: `http://127.0.0.1:${address.port}` });
++          const expected = contentType === 'text/plain' ? JSON.stringify(body) : body;
++          try {
++            const request = client.get(
++              '/response',
++              transport === 'get-body' ? { data: { ids: [1] } } : {}
++            );
++            if (status === 200) {
++              expect((await request).data).toEqual(expected);
++            } else {
++              const error = await request.catch((value: unknown) => value);
++              expect(error).toBeInstanceOf(HttpError);
++              expect((error as HttpError).response).toEqual(expected);
++              expect((error as HttpError).detail).toBe(
++                contentType === 'text/plain' ? undefined : body.detail
++              );
++            }
++          } finally {
++            server.closeAllConnections();
++            await new Promise<void>((resolve, reject) =>
++              server.close((error) => (error ? reject(error) : resolve()))
++            );
++          }
++        });
++      }
++    }
++  }
++});
+diff --git a/clients/typescript/src/client/http-client.ts b/clients/typescript/src/client/http-client.ts
+index 10bc9bc6df99d42374a175bf8bb5849bb15a2bb2..7f6414b9f8b1a80ecec0278579041f0bdccda975 100644
+--- a/clients/typescript/src/client/http-client.ts
++++ b/clients/typescript/src/client/http-client.ts
+@@ -261,7 +261,7 @@ export class HttpClient {
+         let errorContent: unknown;
+         try {
+           const contentType = response.headers.get('content-type');
+-          if (contentType?.includes('application/json')) {
++          if (contentType?.toLowerCase().includes('application/json')) {
+             errorContent = await response.json();
+           } else {
+             errorContent = await response.text();
+@@ -368,7 +368,9 @@ export class HttpClient {
+               const text = buffer.toString('utf-8');
+               let errorContent: unknown;
+               try {
+-                errorContent = contentType?.includes('application/json') ? JSON.parse(text) : text;
++                errorContent = contentType?.toLowerCase().includes('application/json')
++                  ? JSON.parse(text)
++                  : text;
+               } catch {
+                 errorContent = text || null;
+               }
+@@ -432,7 +434,7 @@ export class HttpClient {
+       return (text ? JSON.parse(text) : undefined) as T;
+     }
+ 
+-    if (contentType?.includes('application/json')) {
++    if (contentType?.toLowerCase().includes('application/json')) {
+       return (text ? JSON.parse(text) : undefined) as T;
+     }
+ 
+@@ -457,7 +459,7 @@ export class HttpClient {
+     }
+ 
+     const contentType = response.headers.get('content-type');
+-    if (contentType?.includes('application/json')) {
++    if (contentType?.toLowerCase().includes('application/json')) {
+       return (await response.json()) as T;
+     }
+     return (await response.text()) as T;
