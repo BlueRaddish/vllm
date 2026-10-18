@@ -1,0 +1,67 @@
+diff --git a/tests/unittests/tools/test_agent_tool.py b/tests/unittests/tools/test_agent_tool.py
+index 1d334df138718c0b6aee0965716634090157f0a5..0a26a6cdfaea43263f60c63a08b3602f5793cf3a 100644
+--- a/tests/unittests/tools/test_agent_tool.py
++++ b/tests/unittests/tools/test_agent_tool.py
+@@ -2121,3 +2121,62 @@ async def test_run_async_input_schema_content_survives_node_validation(
+   assert validate_node_data(
+       _RoundTripInput, content, preserve_content=False
+   ) == {'query': 'hello', 'limit': 5}
++
++
++@pytest.mark.parametrize('failure', [RuntimeError('model failed'), None])
++async def test_agent_tool_closes_toolset_after_model_failure(failure):
++  """Nested cleanup releases opened toolsets and leaves parent plugins owned."""
++
++  class TrackingToolset(BaseToolset):
++
++    def __init__(self):
++      super().__init__()
++      self.opened = False
++      self.close_calls = 0
++
++    async def get_tools(self, readonly_context=None):
++      self.opened = True
++      return []
++
++    async def close(self):
++      self.close_calls += 1
++
++  class ParentPlugin(BasePlugin):
++
++    def __init__(self):
++      super().__init__(name='parent')
++      self.close_calls = 0
++
++    async def close(self):
++      self.close_calls += 1
++
++  class FailingModel(testing_utils.MockModel):
++
++    async def generate_content_async(self, llm_request, stream=False):
++      if failure is not None:
++        raise failure
++      async for response in super().generate_content_async(llm_request, stream):
++        yield response
++
++  toolset = TrackingToolset()
++  plugin = ParentPlugin()
++  agent = Agent(
++      name='nested',
++      model=FailingModel.create(responses=['done']),
++      tools=[toolset],
++  )
++  context = ToolContext(
++      await testing_utils.create_invocation_context(agent, plugins=[plugin])
++  )
++  tool = AgentTool(agent=agent)
++  if failure is None:
++    result = await tool.run_async(args={'request': 'go'}, tool_context=context)
++    assert result == 'done'
++  else:
++    with pytest.raises(type(failure)) as error:
++      await tool.run_async(args={'request': 'go'}, tool_context=context)
++    if isinstance(failure, RuntimeError):
++      assert error.value is failure
++  assert toolset.opened
++  assert toolset.close_calls == 1
++  assert plugin.close_calls == 0
