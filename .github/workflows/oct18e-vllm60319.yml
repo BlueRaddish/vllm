@@ -1,0 +1,28 @@
+name: Independent vLLM YAML parser review (scratch)
+on:
+  push:
+    branches: [ci/oct18e-ao-vllm60319-v2]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          path: runner-control
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          repository: vllm-project/vllm
+          ref: 9b515fef39c1d316ca67282edf7c297523e49ee4
+          fetch-depth: 2
+          path: source
+          persist-credentials: false
+      - name: Actual CPU parser regressions, public controls, owner and normal hooks
+        working-directory: source
+        run: python ../runner-control/validation/review.py

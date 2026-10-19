@@ -1,0 +1,56 @@
+{
+  "repo": "vllm-project/vllm",
+  "number": 60319,
+  "head": "9b515fef39c1d316ca67282edf7c297523e49ee4",
+  "parent": "187a0eb98aa42341d703f83421d693fa7585581b",
+  "production": "vllm/utils/argparse_utils.py",
+  "test_module": "tests/utils_/test_argparse_utils.py",
+  "files": [
+    "tests/utils_/test_argparse_utils.py",
+    "vllm/utils/argparse_utils.py"
+  ],
+  "source_sha256": {
+    "tests/utils_/test_argparse_utils.py": "b9d1962bf26e168a2578b1197ec4688d114b0b6033f76630e193b341d217e611",
+    "vllm/utils/argparse_utils.py": "5844568ca506a0508f2cf879fdadd75b9c0b09c4c6113a68da48e27d071fdc43"
+  },
+  "configuration_sha256": {
+    ".pre-commit-config.yaml": "1b1ee6c9524223aee8f3e6d45dfa720183a615a36639fa63e4b17c988273bded",
+    "pyproject.toml": "eaa19cba70f13234be4acdc1eeb2126b937c6f0892fd1af29863db5a62bee95b",
+    "setup.py": "b2ce0549ef12e33c1db846c417235f4e4d104673a09ba29333694f283440347c",
+    "tests/conftest.py": "7f12faf9943c482d7d60875fed8c4a866f5e8c2efdff3b19ba24812ac2be7506",
+    "requirements/cpu.txt": "6ad9f15188028f6ef9a324d975309c5151de15e2ff90239025c9ab5f30749f76",
+    "requirements/build/cpu.txt": "860ac9fb631cdf34bcc3f94de4da489cf026845741e70e0c29c86ac808f2c9fc",
+    "requirements/lint.txt": "86866422f67715efa1f81a6aca12827de773f02b7f0a969f8a37b8ce5f95f75a",
+    "requirements/common.txt": "366cb94fae6ea961da1e7d1c855f6316c3897b5ce9a839017db2bbebb668055a"
+  },
+  "baseline_source_sha256": "d1330ebc9e8fc4ef0ff03a985b8bbf2551ca10780d427a830465a97253558a78",
+  "regression_names": [
+    "test_empty_config_file",
+    "test_invalid_yaml_config_file"
+  ],
+  "control_names": [
+    "test_cli_override_to_config",
+    "test_config_args",
+    "test_config_file"
+  ],
+  "network_test_excluded": "test_convert_ids_list_to_tokens",
+  "declared_test_dependencies": [
+    "pytest==9.1.0",
+    "pytest-asyncio==1.4.0",
+    "tblib==3.1.0"
+  ],
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-19T03:51:30.118578+00:00"
+  },
+  "upstream_source_commits_created": 0,
+  "model_inference": false,
+  "cpu_fixture_adaptation": {
+    "marker": "skip_global_cleanup",
+    "scope": "tests/utils_/test_argparse_utils.py",
+    "reason": "The real root cleanup fixture explicitly provides this non-GPU-unit opt-out; no accelerator is available in the actual CPU-only target.",
+    "production_tests_config_assertions_changed": false,
+    "root_config_and_dynamo_reset_fixtures_retained": true
+  }
+}
