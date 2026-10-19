@@ -1,0 +1,25 @@
+name: Oct18e pristine cmux static attribution
+on:
+  push:
+    branches: [ci/oct18e-vc-cmux-static-baseline]
+permissions:
+  contents: read
+jobs:
+  baseline-static:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Preserve exact pristine static failure without waiver
+        run: python3 validation/producer.py
+      - name: Retain failed attribution receipt
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/oct18e-vc-cmux-static-proofs/receipt.json')
+          if p.exists():
+              print('OCT18E_VC_STATIC_FINAL='+p.read_text().replace('\n',''))
+          PY

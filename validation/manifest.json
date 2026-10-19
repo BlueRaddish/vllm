@@ -1,0 +1,42 @@
+{
+  "repo": "manaflow-ai/cmux",
+  "base": "5da8121f9c71386221c88f74ca3256060c84b372",
+  "source": "cmux-tui/bindings/python/cmux/_protocol.py",
+  "test": "cmux-tui/bindings/python/tests/test_resource_api.py",
+  "baseline_source_sha256": "b1e3cbf2529771a97f33c8ba7da7e874c06f11f033387b5a2c9531b04ce3d036",
+  "fixed_source_sha256": "359fcfe0fe83104c83ad804af0bf481f90feb541335557b11aadb36d0760768e",
+  "test_sha256": "27e188883fdcf0c920e97af4799b0d3f016baf5e48744e06d5b5b01728f47081",
+  "snapshots": {
+    "CLAUDE.md": "44f5c35a42cd41f58f03b7f4eb5972ac7ec009de67005658e3ef933da45dfaa6",
+    "cmux-tui/AGENTS.md": "96cc760d2c51beebccb5b09bd271350756a75b5301eb55ed72b8e8037582a182",
+    "docs/contributor-verification.md": "801129f1cf5430cfad044a85fefce81dc3f5150a468188e94c9e0e59fc37c85f",
+    "scripts/install-git-hooks.sh": "43561c00243b72ce8dce26c60ac2a61051b27ab18dd47cbfb53e9c78eb3f947f",
+    "scripts/git-hooks/pre-commit": "9128585835a670f496b9ce70ca024240a015112837358946d1c244ca15b7c987",
+    "scripts/verify-local.py": "9cf1a5e76c5eeb2e58d5d7b2ba623ef4ecc80860c4aba858339a810baa8fb819",
+    "cmux-tui/bindings/python/pyproject.toml": "842bcf27dc462529efa276d63c75e584c72a504d05dc9ddba2de8cd3b900a2f5",
+    "Sources/FeatureFlags.swift": "092cf26688e6f652085dc27e52c4f27670486522f922be056d3255e19efba80f"
+  },
+  "build_tools": [
+    "PyYAML",
+    "pip",
+    "setuptools>=77",
+    "wheel"
+  ],
+  "person": {
+    "name": "BlueRaddish",
+    "email": "jeeholife2@gmail.com"
+  },
+  "date": "2026-10-19T03:35:40Z",
+  "red_message": "test(python): reproduce resource stream terminal reuse\n\nExercise repeated iteration and error/gap reads through the real Unix\nsocket resource client, with buffered delivery and timeout controls.\n\nAI-assisted with OpenAI Codex.\n",
+  "fix_message": "fix(python): retain resource stream terminal notification\n\nKeep the reserved terminal queue entry available after consumption so\nsubsequent reads preserve exhaustion and stored stream failures.\n\nAI-assisted with OpenAI Codex.\n",
+  "focused_names": [
+    "test_stream_terminal_result_remains_available",
+    "test_stream_end_preserves_buffered_items_and_timeout_validation",
+    "test_stream_end_wakes_both_waiting_readers"
+  ],
+  "limits": [
+    "Linux Python SDK real Unix socket fixture only; no native macOS app, actual daemon, Rust build, GUI or model/provider call.",
+    "Concurrent reader regression preserves notification availability without introducing a general thread-safety contract."
+  ],
+  "baseline_test_sha256": "8d88740c3473d3e31e2cfcf435d0f040a65cdc5ab959dcdb9f5a1d8cef22afd8"
+}
