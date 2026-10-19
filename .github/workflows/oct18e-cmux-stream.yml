@@ -1,0 +1,25 @@
+name: Oct18e cmux resource stream terminal validation
+on:
+  push:
+    branches: [ci/oct18e-vc-cmux-stream-v3]
+permissions:
+  contents: read
+jobs:
+  sdk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Reproduce and repair through the actual resource client
+        run: python3 validation/producer.py
+      - name: Retain actual receipt even on failure
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/oct18e-vc-cmux-proofs/receipt.json')
+          if p.exists():
+              print('OCT18E_VC_FINAL_RECEIPT='+p.read_text().replace('\n',''))
+          PY
