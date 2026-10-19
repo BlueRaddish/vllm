@@ -1,0 +1,42 @@
+{
+  "repo": "google/adk-python",
+  "reviewed_PR": 7585,
+  "head": "638d932a9e339d8d968d1f48456ce4afbc973698",
+  "baseline": "ff6c851dde00cbf3469400810c3148164ff82a18",
+  "production": "src/google/adk/tools/environment/_read_file_tool.py",
+  "test_file": "tests/unittests/tools/environment/test_read_file_tool.py",
+  "files": [
+    "src/google/adk/tools/environment/_read_file_tool.py",
+    "tests/unittests/tools/environment/test_read_file_tool.py"
+  ],
+  "source_sha256": {
+    "src/google/adk/tools/environment/_read_file_tool.py": "0ed81c90003c80ce6b248dc4efa4fb1e8f8ff11a7d0df5c3c7d8ea413bd2e35f",
+    "tests/unittests/tools/environment/test_read_file_tool.py": "863b8ffcc0034529c1599c85d8781e029c481735012af3a66b0a9f212b918cf9"
+  },
+  "configuration_sha256": {
+    "pyproject.toml": "25eb8754e66900ccad3e8ba175e138bcbc84659181438e9692ec735884b4b93a",
+    "tox.ini": "7eec9b6b133fc752f30a444e42d67689a38a1df08bfb8cb9ce49f28e30b6bfbf",
+    ".pre-commit-config.yaml": "c7d94b14a12db526d84110ffd762c91f0ba863bbc69413b09931857abd5ce149"
+  },
+  "baseline_source_sha256": "6d6564e2392321fad9271bff6dfee9ac7d2bc110724c2c7f6a2492b5b3f9cf5e",
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-19T03:20:44Z"
+  },
+  "scope_id": "oct18e-adk7585-empty-file-review",
+  "regression_args": [
+    "tests/unittests/tools/environment/test_read_file_tool.py::TestReadFileTool::test_read_whole_file_with_equivalent_line_ranges",
+    "tests/unittests/tools/environment/test_read_file_tool.py::TestReadFileTool::test_read_empty_file_through_first_line",
+    "tests/unittests/tools/environment/test_read_file_tool.py::TestReadFileTool::test_read_empty_file_with_line_range_returns_error"
+  ],
+  "baseline_expected": {
+    "tests": 19,
+    "failures": 9
+  },
+  "owning_args": [
+    "tests/unittests/tools/environment",
+    "tests/unittests/environment"
+  ],
+  "new_source_patch_or_commit": false
+}
