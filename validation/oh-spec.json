@@ -1,0 +1,36 @@
+{
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-19T03:21:41Z"
+  },
+  "committer": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-19T03:21:41Z"
+  },
+  "sdk": {
+    "base": "394db779fb399b2469005aaebadc9bdc7615d131",
+    "files": [
+      "clients/typescript/src/client/cloud-client.ts",
+      "clients/typescript/src/__tests__/cloud-client-content-type.test.ts"
+    ],
+    "repo": "OpenHands/software-agent-sdk",
+    "patch_sha256": "b7d3bcc81811229415597a731a834fcbca2ae902c8af77d8631adabbe3b85225",
+    "source_sha256": {
+      "clients/typescript/src/client/cloud-client.ts": "2b745326ceb4919223acf620a68f76a16be5972bcf0e0ed99735cc27e89c0314",
+      "clients/typescript/src/__tests__/cloud-client-content-type.test.ts": "73b092e6b05bd970e5eb6eaf6f199d0f006454015fcb46a73b13f239351e17a7"
+    },
+    "configuration_sha256": {
+      "pyproject.toml": "6ca189574974a2723a4d2eb6034186d72893be5c21e662a3615f6fb30cb73c1d",
+      "uv.lock": "64f012d63f2feeb570102be251d2474def6501b0cf90de085302ed635f41bc7f",
+      ".pre-commit-config.yaml": "11f6c67a3273db7ffb5693bccf5fef03d63b428b16953aee313539bd237a195c",
+      "clients/typescript/package-lock.json": "5ac48400de51b66ab9ecc3adc04f9ef7497de2d7f0b9dc2bb5f9bcb37ee9e858",
+      "clients/typescript/package.json": "a66b9379ddbfef70fb4bf6be6f23a827e61609baef45ac45057a4d6fa3569561"
+    },
+    "message": "fix(ts-client): recognize JSON media types in CloudClient responses\n\nApply the same case-insensitive JSON media type classification to\nCloudClient direct and proxy success/error responses. Preserve\npayload case, explicit response types and non-JSON bodies.\n\nAI-assisted with OpenAI Codex.\n\nCo-authored-by: openhands <openhands@all-hands.dev>\n"
+  },
+  "issue": 6074,
+  "existing_PR": 6077,
+  "source_branch": "fix/oct17e-ao-oh-json-casing"
+}

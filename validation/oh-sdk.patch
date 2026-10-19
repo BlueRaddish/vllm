@@ -1,0 +1,91 @@
+diff --git a/clients/typescript/src/__tests__/cloud-client-content-type.test.ts b/clients/typescript/src/__tests__/cloud-client-content-type.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..761c72d7c436cf9773918f610f63a6c5daf92354
+--- /dev/null
++++ b/clients/typescript/src/__tests__/cloud-client-content-type.test.ts
+@@ -0,0 +1,63 @@
++import { createServer } from 'node:http';
++import { describe, expect, it } from 'vitest';
++import { HttpError } from '../client/http-client';
++import { CloudClient } from '../client/cloud-client';
++
++describe('Cloud JSON media type casing', () => {
++  for (const transport of ['direct', 'proxy'] as const) {
++    for (const contentType of [
++      'Application/JSON; charset=utf-8',
++      'application/json',
++      'text/plain',
++    ]) {
++      for (const status of [200, 400]) {
++        it(`${transport} reads ${contentType} at status ${status}`, async () => {
++          const body = { detail: 'Keep My Case' };
++          let received: { method?: string; path?: string } | undefined;
++          const server = createServer((request, response) => {
++            received = { method: request.method, path: request.url };
++            request.resume();
++            request.on('end', () => {
++              response.writeHead(status, { 'Content-Type': contentType });
++              response.end(JSON.stringify(body));
++            });
++          });
++          await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
++          const address = server.address();
++          if (!address || typeof address === 'string') throw new Error('Missing loopback port');
++          const host = `http://127.0.0.1:${address.port}`;
++          const client = new CloudClient({ host, proxy: { host } });
++          const expected = contentType === 'text/plain' ? JSON.stringify(body) : body;
++          try {
++            const request = client.request({
++              method: 'GET',
++              path: '/response',
++              ...(transport === 'proxy'
++                ? { hostOverride: 'https://sandbox.example.invalid' }
++                : {}),
++            });
++            if (status === 200) {
++              expect(await request).toEqual(expected);
++            } else {
++              const error = await request.catch((value: unknown) => value);
++              expect(error).toBeInstanceOf(HttpError);
++              expect((error as HttpError).response).toEqual(expected);
++              expect((error as HttpError).detail).toBe(
++                contentType === 'text/plain' ? undefined : body.detail
++              );
++            }
++            expect(received).toEqual({
++              method: transport === 'proxy' ? 'POST' : 'GET',
++              path: transport === 'proxy' ? '/api/cloud-proxy' : '/response',
++            });
++          } finally {
++            server.closeAllConnections();
++            await new Promise<void>((resolve, reject) =>
++              server.close((error) => (error ? reject(error) : resolve()))
++            );
++          }
++        });
++      }
++    }
++  }
++});
+diff --git a/clients/typescript/src/client/cloud-client.ts b/clients/typescript/src/client/cloud-client.ts
+index 966710111df6cc3f3b5b3462aa2ec4e170d4e848..cc4cbfe5774bc84b7fdabaebeba3f51bb95b97a5 100644
+--- a/clients/typescript/src/client/cloud-client.ts
++++ b/clients/typescript/src/client/cloud-client.ts
+@@ -761,7 +761,7 @@ async function buildHttpError(response: Response): Promise<HttpError> {
+   let errorContent: unknown;
+   try {
+     const contentType = response.headers.get('content-type');
+-    errorContent = contentType?.includes('application/json')
++    errorContent = contentType?.toLowerCase().includes('application/json')
+       ? await response.json()
+       : await response.text();
+   } catch {
+@@ -789,7 +789,7 @@ async function parseResponse<TResponse>(
+   if (responseType === 'text') return (await response.text()) as TResponse;
+ 
+   const contentType = response.headers.get('content-type');
+-  if (responseType === 'json' || contentType?.includes('application/json')) {
++  if (responseType === 'json' || contentType?.toLowerCase().includes('application/json')) {
+     return (await response.json()) as TResponse;
+   }
+   return (await response.text()) as TResponse;
