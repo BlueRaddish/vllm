@@ -1,0 +1,48 @@
+name: ADK conflict resolution verification (scratch)
+on:
+  push:
+    branches: [ci/oct22-ao-adk7591-v1]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: '3.11'
+            lane: py311
+          - version: '3.12'
+            lane: py312
+          - version: '3.13'
+            lane: py313
+          - version: '3.14'
+            lane: py314
+    env:
+      PYTHON_VERSION: ${{ matrix.version }}
+      TOX_LANE: ${{ matrix.lane }}
+      UV_EXCLUDE_NEWER: '2026-10-23T00:00:00Z'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          path: runner-control
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: ${{ matrix.version }}
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: '0.12.23'
+          enable-cache: false
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: google/adk-python
+          ref: bb7472c3fa73aa305a662381b63bca965be56956
+          fetch-depth: 0
+          path: source
+          persist-credentials: false
+      - name: Merge, reproduce, check normal hooks and full supported tox lane
+        working-directory: source
+        run: python ../runner-control/validation/verify.py

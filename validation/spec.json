@@ -1,0 +1,44 @@
+{
+  "repo": "google/adk-python",
+  "PR": 7591,
+  "head": "bb7472c3fa73aa305a662381b63bca965be56956",
+  "main": "37b1ab3c20a0bee18e5c4429a05a0007cd8ea8d6",
+  "merge_base": "a6ed85905d4c1d1f285ba9d4f76a9d801b66d17f",
+  "files": [
+    "src/google/adk/tools/set_model_response_tool.py",
+    "src/google/adk/utils/_schema_utils.py",
+    "tests/unittests/tools/test_agent_tool.py",
+    "tests/unittests/tools/test_set_model_response_tool.py",
+    "tests/unittests/utils/test_schema_utils.py"
+  ],
+  "resolution": [
+    "src/google/adk/utils/_schema_utils.py",
+    "tests/unittests/utils/test_schema_utils.py"
+  ],
+  "tree": "a29e06b0782d733c9307621d0283df432c882d25",
+  "patch_sha256": "06cb6004bdb8de733e804dff85e41f110221cdc062d25aa62ca64562ae49fb75",
+  "source_sha256": {
+    "src/google/adk/tools/set_model_response_tool.py": "2ee2256c1ed5bafa8539d881a5d6cf7cb5ad8f44c100a5e7894b220d71e4964b",
+    "src/google/adk/utils/_schema_utils.py": "07064538ec393f9f6f82212736f6b665147ff6a37d4e399244cc4b0b539959bb",
+    "tests/unittests/tools/test_agent_tool.py": "310f15304b43638a709155f590c3556a373d7c30a0ff8553de276d23ff630e3b",
+    "tests/unittests/tools/test_set_model_response_tool.py": "262c8307b2682eb8341c48e304c6432c386bc3f0f0ddb2b6430727b2f76b0505",
+    "tests/unittests/utils/test_schema_utils.py": "10ca4c27bc6593a6e8db20cfc7a60e56e9139ea690c56cae95c1f77d072d2444"
+  },
+  "config_sha256": {
+    "pyproject.toml": "dc4c73161198bce1ff1b42b7e0839505f59223eb8a78c07e990d40b25c58670c",
+    "tox.ini": "7eec9b6b133fc752f30a444e42d67689a38a1df08bfb8cb9ce49f28e30b6bfbf",
+    ".pre-commit-config.yaml": "c7d94b14a12db526d84110ffd762c91f0ba863bbc69413b09931857abd5ce149"
+  },
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-23T04:03:35Z"
+  },
+  "message": "fix(schema): preserve annotated schemas while merging current main\n\nResolve the validate_schema conflict by retaining upstream Annotated\nunwrapping and type narrowing together with JSON-mode output. Cover\nannotated scalar, list item and outer list dates and omitted None fields.\n\nRefs #7480\n\nAI-assisted with OpenAI Codex.\n",
+  "regression_args": [
+    "tests/unittests/utils/test_schema_utils.py::TestValidateSchema::test_structured_output_preserves_json_date",
+    "tests/unittests/utils/test_schema_utils.py::TestValidateSchema::test_annotated_structured_output_preserves_json_date",
+    "tests/unittests/utils/test_schema_utils.py::TestValidateSchema::test_basemodel_schema",
+    "tests/unittests/utils/test_schema_utils.py::TestValidateSchema::test_list_of_basemodel_schema"
+  ]
+}
