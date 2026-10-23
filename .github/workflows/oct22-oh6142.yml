@@ -1,0 +1,35 @@
+name: Independent OpenHands directory-cap review (scratch)
+on:
+  push:
+    branches: [ci/oct22-ao-oh6142-v2]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          path: runner-control
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: '0.12.23'
+          enable-cache: false
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          repository: OpenHands/software-agent-sdk
+          ref: edbf3fcbc23187901892b779578072f8477ede24
+          fetch-depth: 2
+          path: source
+          persist-credentials: false
+      - name: Real filesystem regressions, owning tools and normal scoped hooks
+        working-directory: source
+        run: python ../runner-control/validation/verify.py

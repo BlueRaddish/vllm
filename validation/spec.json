@@ -1,0 +1,28 @@
+{
+  "repo": "OpenHands/software-agent-sdk",
+  "PR": 6142,
+  "head": "edbf3fcbc23187901892b779578072f8477ede24",
+  "base": "e86818a10a8808630190b02656e866641df322f9",
+  "files": [
+    "openhands-tools/openhands/tools/gemini/list_directory/impl.py",
+    "tests/tools/gemini/list_directory/test_list_directory.py"
+  ],
+  "production": "openhands-tools/openhands/tools/gemini/list_directory/impl.py",
+  "test": "tests/tools/gemini/list_directory/test_list_directory.py",
+  "source_sha256": {
+    "openhands-tools/openhands/tools/gemini/list_directory/impl.py": "9708c27a1cd4108ff31aebecb262fbee33ad0e946d1ac6559fa49f3b94bb0866",
+    "tests/tools/gemini/list_directory/test_list_directory.py": "3f25862e611e153343b8587479b1555acc674c7404cba9c13cdc10fb8e7d93d9"
+  },
+  "config_sha256": {
+    "pyproject.toml": "6ca189574974a2723a4d2eb6034186d72893be5c21e662a3615f6fb30cb73c1d",
+    "uv.lock": "e8e0701196c3167f1aa66b4f1f991965a23c39ef0caaf9ba1a6602ee8c2140d5",
+    ".pre-commit-config.yaml": "11f6c67a3273db7ffb5693bccf5fef03d63b428b16953aee313539bd237a195c"
+  },
+  "person": {
+    "name": "Jeeho Lee",
+    "email": "jeeholife2@gmail.com",
+    "date": "2026-10-23T04:06:19Z"
+  },
+  "new_source_commit": false,
+  "live_model_calls": false
+}
